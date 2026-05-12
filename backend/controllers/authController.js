@@ -29,6 +29,7 @@ const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({ message: "Registration failed" });
   }
 };
