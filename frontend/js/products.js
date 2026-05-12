@@ -1,4 +1,13 @@
 const API_URL = "http://localhost:5000/products";
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 const urlParams = new URLSearchParams(window.location.search);
 const editId = urlParams.get("id");
 
@@ -60,13 +69,14 @@ if (productForm) {
       dateAdded: document.getElementById("dateAdded").value,
     };
 
-    const url = editId ? `${API_URL}/${editId}` : API_URL;
+  const url = editId ? `${API_URL}/${editId}` : API_URL;
 const method = editId ? "PUT" : "POST";
 
 const response = await fetch(url, {
   method: method,
   headers: {
     "Content-Type": "application/json",
+    ...getAuthHeaders()
   },
   body: JSON.stringify(product),
 });
@@ -92,7 +102,9 @@ if (productTableBody) {
   let products = [];
 
   async function loadProducts() {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL,{
+      headers: getAuthHeaders(),
+    });
     products = await response.json();
     displayProducts(products);
   }
@@ -188,6 +200,10 @@ if (productTableBody) {
 async function deleteProduct(id) {
   const response = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders()
+    },
   });
 
   if (!response.ok) {
@@ -211,7 +227,9 @@ const recentProductsBody = document.getElementById("recentProductsBody");
 
 if (totalProducts && lowStockItems && inventoryValue && recentProductsBody) {
   async function loadDashboard() {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, {
+      headers: getAuthHeaders(),
+    });
     const products = await response.json();
 
     totalProducts.textContent = products.length;
