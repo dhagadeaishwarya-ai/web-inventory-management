@@ -1,6 +1,7 @@
 const AUTH_URL = "http://localhost:5000/auth";
 
 const loginForm = document.getElementById("loginForm");
+const logoutLinks = document.querySelectorAll(".logout-link");
 
 if (loginForm) {
   loginForm.addEventListener("submit", async function (event) {
@@ -31,3 +32,14 @@ if (loginForm) {
     window.location.href = "dashboard.html";
   });
 }
+
+logoutLinks.forEach(function (link) {
+  link.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.location.href = "login.html";
+  });
+});
